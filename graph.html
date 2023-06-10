@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 500px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "rgb(255, 0, 0)", "id": "Appetizer", "label": "Appetizer", "physics": false, "shape": "dot", "x": -98.31121431894407, "y": 180.3324818295408}, {"color": "rgb(0, 255, 0)", "id": "Breakfast", "label": "Breakfast", "physics": false, "shape": "dot", "x": -184.5741274679114, "y": 11.079213842839417}, {"color": "rgb(0, 0, 255)", "id": "Dessert", "label": "Dessert", "physics": false, "shape": "dot", "x": -261.9051567028927, "y": -20.79213671829044}, {"color": "rgb(255, 255, 0)", "id": "Dinner", "label": "Dinner", "physics": false, "shape": "dot", "x": 195.89775610920952, "y": 163.02574739358326}, {"color": "rgb(255, 0, 255)", "id": "Drink", "label": "Drink", "physics": false, "shape": "dot", "x": -24.488667243973286, "y": -286.8434941294523}, {"color": "rgb(0, 255, 255)", "id": "Lunch", "label": "Lunch", "physics": false, "shape": "dot", "x": 231.31889935281805, "y": 18.814060979915826}, {"color": "rgb(255, 128, 0)", "id": "Side Dish", "label": "Side Dish", "physics": false, "shape": "dot", "x": -6.767410019135652, "y": 209.69547856237855}, {"color": "silver", "id": "salt", "label": "salt", "physics": true, "shape": "dot", "x": -17.425711437805848, "y": 61.701680430854275}, {"color": "silver", "id": "pepper", "label": "pepper", "physics": true, "shape": "dot", "x": 171.3008682816022, "y": 251.0872036878597}, {"color": "silver", "id": "cheese", "label": "cheese", "physics": true, "shape": "dot", "x": 62.365002569529786, "y": 60.07546035761613}, {"color": "silver", "id": "oil", "label": "oil", "physics": true, "shape": "dot", "x": 54.859845500592385, "y": 114.86406000211915}, {"color": "silver", "id": "onion", "label": "onion", "physics": true, "shape": "dot", "x": 121.76950046711934, "y": 267.4538821705258}, {"color": "silver", "id": "cream", "label": "cream", "physics": true, "shape": "dot", "x": -140.34686168769824, "y": -121.74485689888009}, {"color": "silver", "id": "egg", "label": "egg", "physics": true, "shape": "dot", "x": -317.7792131989339, "y": 199.86927720459718}, {"color": "silver", "id": "sauce", "label": "sauce", "physics": true, "shape": "dot", "x": -5.36800906309553, "y": 389.6667389880877}, {"color": "silver", "id": "butter", "label": "butter", "physics": true, "shape": "dot", "x": -230.9944604788063, "y": 212.37415581411545}, {"color": "silver", "id": "flour", "label": "flour", "physics": true, "shape": "dot", "x": -336.8366113280169, "y": 138.11810538489357}, {"color": "silver", "id": "sugar", "label": "sugar", "physics": true, "shape": "dot", "x": -9.464490098615705, "y": -79.63098276749635}, {"color": "silver", "id": "milk", "label": "milk", "physics": true, "shape": "dot", "x": -267.87403812032505, "y": -217.22769872572167}, {"color": "silver", "id": "cinnamon", "label": "cinnamon", "physics": true, "shape": "dot", "x": -436.80101429167314, "y": 16.02581791120942}, {"color": "silver", "id": "vanilla", "label": "vanilla", "physics": true, "shape": "dot", "x": -213.39467050792854, "y": -228.10495231721424}, {"color": "silver", "id": "soda", "label": "soda", "physics": true, "shape": "dot", "x": -497.1060447982144, "y": -100.22812039712143}, {"color": "silver", "id": "garlic", "label": "garlic", "physics": true, "shape": "dot", "x": 160.28612955156345, "y": 412.6727142615501}, {"color": "silver", "id": "chicken", "label": "chicken", "physics": true, "shape": "dot", "x": 372.92011596600963, "y": 342.44252166606435}, {"color": "silver", "id": "water", "label": "water", "physics": true, "shape": "dot", "x": 128.16054678083492, "y": -82.71481831761446}, {"color": "silver", "id": "tomato", "label": "tomato", "physics": true, "shape": "dot", "x": 396.0958619278792, "y": 161.53149572824117}, {"color": "silver", "id": "ice", "label": "ice", "physics": true, "shape": "dot", "x": -205.54486222209664, "y": -455.19688041485705}, {"color": "silver", "id": "banana", "label": "banana", "physics": true, "shape": "dot", "x": -103.88587500431021, "y": -494.41646670441327}, {"color": "silver", "id": "yogurt", "label": "yogurt", "physics": true, "shape": "dot", "x": 4.324007263910203, "y": -500.00000000000006}, {"color": "silver", "id": "strawberry", "label": "strawberry", "physics": true, "shape": "dot", "x": 103.97253399056976, "y": -468.90092349883076}, {"color": "silver", "id": "juice", "label": "juice", "physics": true, "shape": "dot", "x": 178.349902581947, "y": -407.5463537064864}, {"color": "silver", "id": "mayonnaise", "label": "mayonnaise", "physics": true, "shape": "dot", "x": 378.1091752237259, "y": -164.9177986028668}, {"color": "silver", "id": "vinegar", "label": "vinegar", "physics": true, "shape": "dot", "x": 441.3282351880344, "y": -73.80902468386304}, {"color": "silver", "id": "celery", "label": "celery", "physics": true, "shape": "dot", "x": 468.40129733846965, "y": 43.1282091595284}, {"color": "silver", "id": "potato", "label": "potato", "physics": true, "shape": "dot", "x": -110.59124010343791, "y": 448.11620250758796}]);
+                  edges = new vis.DataSet([{"from": "Appetizer", "to": "salt"}, {"from": "Appetizer", "to": "pepper"}, {"from": "Appetizer", "to": "cheese"}, {"from": "Appetizer", "to": "oil"}, {"from": "Appetizer", "to": "onion"}, {"from": "Appetizer", "to": "cream"}, {"from": "Appetizer", "to": "egg"}, {"from": "Appetizer", "to": "sauce"}, {"from": "Appetizer", "to": "butter"}, {"from": "Appetizer", "to": "flour"}, {"from": "Breakfast", "to": "egg"}, {"from": "Breakfast", "to": "salt"}, {"from": "Breakfast", "to": "sugar"}, {"from": "Breakfast", "to": "milk"}, {"from": "Breakfast", "to": "flour"}, {"from": "Breakfast", "to": "butter"}, {"from": "Breakfast", "to": "cinnamon"}, {"from": "Breakfast", "to": "cheese"}, {"from": "Breakfast", "to": "vanilla"}, {"from": "Breakfast", "to": "oil"}, {"from": "Dessert", "to": "sugar"}, {"from": "Dessert", "to": "egg"}, {"from": "Dessert", "to": "butter"}, {"from": "Dessert", "to": "flour"}, {"from": "Dessert", "to": "vanilla"}, {"from": "Dessert", "to": "salt"}, {"from": "Dessert", "to": "milk"}, {"from": "Dessert", "to": "cream"}, {"from": "Dessert", "to": "cinnamon"}, {"from": "Dessert", "to": "soda"}, {"from": "Dinner", "to": "pepper"}, {"from": "Dinner", "to": "salt"}, {"from": "Dinner", "to": "onion"}, {"from": "Dinner", "to": "oil"}, {"from": "Dinner", "to": "garlic"}, {"from": "Dinner", "to": "sauce"}, {"from": "Dinner", "to": "cheese"}, {"from": "Dinner", "to": "chicken"}, {"from": "Dinner", "to": "water"}, {"from": "Dinner", "to": "tomato"}, {"from": "Drink", "to": "milk"}, {"from": "Drink", "to": "sugar"}, {"from": "Drink", "to": "ice"}, {"from": "Drink", "to": "vanilla"}, {"from": "Drink", "to": "banana"}, {"from": "Drink", "to": "yogurt"}, {"from": "Drink", "to": "water"}, {"from": "Drink", "to": "cream"}, {"from": "Drink", "to": "strawberry"}, {"from": "Drink", "to": "juice"}, {"from": "Lunch", "to": "onion"}, {"from": "Lunch", "to": "pepper"}, {"from": "Lunch", "to": "salt"}, {"from": "Lunch", "to": "oil"}, {"from": "Lunch", "to": "mayonnaise"}, {"from": "Lunch", "to": "vinegar"}, {"from": "Lunch", "to": "cheese"}, {"from": "Lunch", "to": "tomato"}, {"from": "Lunch", "to": "sugar"}, {"from": "Lunch", "to": "celery"}, {"from": "Side Dish", "to": "salt"}, {"from": "Side Dish", "to": "pepper"}, {"from": "Side Dish", "to": "oil"}, {"from": "Side Dish", "to": "onion"}, {"from": "Side Dish", "to": "butter"}, {"from": "Side Dish", "to": "potato"}, {"from": "Side Dish", "to": "sugar"}, {"from": "Side Dish", "to": "cheese"}, {"from": "Side Dish", "to": "garlic"}, {"from": "Side Dish", "to": "water"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
